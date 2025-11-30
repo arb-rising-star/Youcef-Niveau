@@ -261,6 +261,7 @@
             word-wrap: break-word;
         }
         
+        /* تصميم مؤشر الكتابة */
         .typing-indicator {
             display: flex;
             align-items: center;
@@ -355,7 +356,7 @@
         class YoucefNiveauChat {
             constructor() {
                 this.attachedFiles = [];
-                // *** التغيير الرئيسي: الإشارة إلى نقطة نهاية Vercel الجديدة ***
+                // *** التغيير الرئيسي: الاتصال بنقطة نهاية Vercel الآمنة ***
                 this.API_URL = '/api/chat'; 
                 this.initializeEventListeners();
             }
@@ -388,6 +389,7 @@
                 if (!files.length) return;
 
                 for (let file of files) {
+                    // قبول الصور فقط لإرسالها كـ Base64 إلى نموذج DeepSeek Vision
                     if (file.type.startsWith('image/')) {
                         this.attachedFiles.push(file);
                         this.displayFilePreview(file);
@@ -502,6 +504,7 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'bot-message';
                 
+                // تحويل تنسيق Markdown إلى HTML
                 messageDiv.innerHTML = this.formatBotResponse(message);
                 
                 chatMessages.appendChild(messageDiv);
@@ -509,11 +512,11 @@
             }
             
             formatBotResponse(text) {
-                // تحويل تنسيق Markdown إلى HTML
                 return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                            .replace(/\n/g, '<br>');
             }
 
+            // دالة لتحويل الملف إلى Base64
             fileToBase64(file) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -523,8 +526,6 @@
                 });
             }
             
-            // دالة getApiKey لم تعد ضرورية هنا!
-
             async sendMessage() {
                 const textInput = document.getElementById('text-input');
                 const message = textInput.value.trim();
@@ -562,13 +563,13 @@
                         }
                     }
                     
-                    // 3. إرسال الطلب إلى نقطة نهاية Vercel الآمنة
+                    // 3. إرسال الطلب إلى نقطة نهاية Vercel الآمنة (/api/chat)
                     const response = await fetch(this.API_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        // نرسل مصفوفة المحتوى فقط
+                        // نرسل مصفوفة المحتوى فقط، ونقطة النهاية الآمنة ستضيف المفتاح
                         body: JSON.stringify({ contents: contents })
                     });
 
@@ -585,7 +586,7 @@
 
                 } catch (error) {
                     this.hideTypingIndicator();
-                    this.addBotMessage('❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.** يرجى التأكد من إعداد نقطة نهاية Vercel بشكل صحيح ومن صحة مفتاح API في متغيرات البيئة.');
+                    this.addBotMessage('❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.** يرجى التأكد من أن مفتاح API صحيح في متغيرات البيئة على Vercel.');
                     console.error('API Error:', error);
                 }
             }
