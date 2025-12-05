@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youcef Niveau - المساعد الذكي مع Gemini 2.5 Flash</title>
+    <title>Youcef Niveau - المساعد الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* CSS الخاص بك بالكامل */
@@ -349,8 +349,7 @@
             </div>
             <div>
                 <h1>Youcef Niveau</h1>
-                <div class="model-badge">Gemini 2.5 Flash</div>
-            </div>
+                </div>
         </div>
 
         <div class="welcome-section">
@@ -360,7 +359,7 @@
             <h1 class="welcome-title">مرحباً، أنا Youcef Niveau</h1>
             <p class="welcome-subtitle">
                 مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
-                <span style="color: #4285f4; font-weight: 600;">مزوّد بأحدث تقنية Google Gemini 2.5 Flash</span><br>
+                <span style="color: #4285f4; font-weight: 600;">مدعوم بأحدث تقنيات الذكاء الاصطناعي</span><br>
                 يمكنك إرفاق صورة للمسألة عبر زر (+)
             </p>
         </div>
@@ -388,7 +387,7 @@
             </div>
             <div class="input-footer">
                 <span style="color: #4285f4;">
-                    <i class="fas fa-bolt"></i> مدعوم بـ Gemini 2.5 Flash - 60 طلب مجاني/دقيقة
+                    <i class="fas fa-bolt"></i> Youcef Niveau جاهز للمساعدة الآن
                 </span>
             </div>
         </div>
@@ -405,9 +404,10 @@
 
             setupWelcomeMessage() {
                 const welcomeSubtitle = document.querySelector('.welcome-subtitle');
+                // تم تعديل هذا النص لإزالة الإشارة إلى Gemini
                 welcomeSubtitle.innerHTML = `
                     مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
-                    <span style="color: #4285f4; font-weight: 600;">مزوّد بأحدث تقنية Google Gemini 2.5 Flash</span><br>
+                    <span style="color: #4285f4; font-weight: 600;">مدعوم بأحدث تقنيات الذكاء الاصطناعي</span><br>
                     يمكنك إرفاق صورة للمسألة عبر زر (+)
                 `;
             }
@@ -521,6 +521,7 @@
                     typingDiv = document.createElement('div');
                     typingDiv.className = 'bot-message';
                     typingDiv.id = 'typing-indicator';
+                    // تم تعديل هذا النص لإزالة الإشارة إلى Gemini
                     typingDiv.innerHTML = `
                         <div class="typing-indicator">
                             <div class="typing-dots">
@@ -528,7 +529,7 @@
                                 <span></span>
                                 <span></span>
                             </div>
-                            <span style="margin-right: 8px; font-size: 12px; color: #666;">Gemini 2.5 Flash يجيب...</span>
+                            <span style="margin-right: 8px; font-size: 12px; color: #666;">Youcef Niveau يجيب...</span>
                         </div>
                     `;
                     chatMessages.appendChild(typingDiv);
@@ -579,8 +580,7 @@
                 messageDiv.innerHTML = `
                     <div style="margin-bottom: 8px;">${formattedMessage}</div>
                     <div class="message-info">
-                        <span>Youcef Niveau (Gemini 2.5 Flash)</span>
-                        <div>
+                        <span>Youcef Niveau</span> <div>
                             <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span>
                             <button class="copy-btn" title="نسخ الرسالة">
                                 <i class="far fa-copy"></i>
@@ -664,7 +664,7 @@
                         if (file.type.startsWith('image/')) {
                             // تحقق من حجم الصورة (الحد الأقصى 20MB لـ Gemini)
                             if (file.size > 20 * 1024 * 1024) {
-                                this.addBotMessage('⚠️ الصورة كبيرة جداً. الحد الأقصى لـ Gemini هو 20 ميجابايت. يرجى اختيار صورة أصغر.');
+                                this.addBotMessage('⚠️ الصورة كبيرة جداً. الحد الأقصى المسموح به هو 20 ميجابايت. يرجى اختيار صورة أصغر.');
                                 this.hideTypingIndicator();
                                 return;
                             }
@@ -690,15 +690,16 @@
                         const errorData = await response.json().catch(() => ({}));
                         let errorMessage = '❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.**';
                         
+                        // تم تعديل رسائل الخطأ لإزالة الإشارة إلى Gemini
                         if (response.status === 500 && errorData.message?.includes('GEMINI_API_KEY')) {
                             errorMessage = `
                                 ❌ **خطأ في الإعداد**
                                 <br><br>
-                                Gemini API Key غير مضاف إلى Vercel.
+                                المفتاح السري (API Key) غير مضاف إلى Vercel.
                                 <br><br>
                                 <strong>خطوات الحل:</strong>
                                 <br>
-                                1. احصل على مفتاح مجاني من: <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                                1. احصل على مفتاح مجاني.
                                 <br>
                                 2. في Vercel Dashboard، أضف متغير بيئة:
                                 <br>
@@ -710,9 +711,9 @@
                             `;
                         } else if (response.status === 429) {
                             errorMessage = `
-                                ⚠️ **تم تجاوز الحد المجاني**
+                                ⚠️ **تم تجاوز الحد المسموح به**
                                 <br><br>
-                                Gemini API المجاني يسمح بـ 60 طلب/دقيقة فقط.
+                                الخدمة تسمح بـ 60 طلب/دقيقة فقط.
                                 <br>
                                 يرجى الانتظار دقيقة قبل المحاولة مرة أخرى.
                             `;
@@ -720,11 +721,9 @@
                             errorMessage = `
                                 ❌ **نموذج غير متوفر**
                                 <br><br>
-                                Gemini 2.5 Flash غير متاح حالياً.
+                                النموذج الذكي غير متاح حالياً.
                                 <br>
-                                الرجاء تغيير السطر في chat.js إلى:
-                                <br>
-                                <code>gemini-1.5-flash</code>
+                                الرجاء التأكد من إعدادات chat.js
                             `;
                         } else if (errorData.message) {
                             errorMessage = `❌ **${errorData.message}**`;
