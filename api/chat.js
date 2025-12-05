@@ -4,7 +4,8 @@
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 // رابط API الخاص بـ Gemini 2.5 Flash (أحدث وأقوى نموذج)
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+// تم التعديل من 'gemini-2.0-flash-exp' إلى 'gemini-2.5-flash' لحل مشكلة 'Quota exceeded for metric: limit: 0'
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 export default async function handler(req, res) {
     // 1. التحقق من مفتاح API (الأمان)
