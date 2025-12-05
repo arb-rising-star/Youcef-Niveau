@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Youcef Niveau - المساعد الذكي</title>
+    <title>Youcef Niveau - المساعد الذكي مع Gemini 2.5 Flash</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* CSS الخاص بك بالكامل */
@@ -48,7 +48,7 @@
         .logo {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #10a37f 0%, #0d8c6d 100%);
+            background: linear-gradient(135deg, #4285f4 0%, #0d47a1 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -64,6 +64,16 @@
             font-weight: 600;
         }
 
+        .model-badge {
+            background: linear-gradient(135deg, #34a853 0%, #0d8c6d 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
         .welcome-section {
             flex: 1;
             display: flex;
@@ -77,7 +87,7 @@
         .welcome-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #10a37f 0%, #0d8c6d 100%);
+            background: linear-gradient(135deg, #4285f4 0%, #0d47a1 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -130,9 +140,9 @@
         }
 
         .attachment-btn:hover {
-            background: #10a37f;
+            background: #4285f4;
             color: white;
-            border-color: #10a37f;
+            border-color: #4285f4;
         }
 
         .input-wrapper {
@@ -156,7 +166,7 @@
         }
 
         .text-input:focus {
-            border-color: #10a37f;
+            border-color: #4285f4;
         }
 
         .send-button {
@@ -164,7 +174,7 @@
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            background: #10a37f;
+            background: #4285f4;
             color: white;
             border: none;
             width: 40px;
@@ -178,7 +188,7 @@
         }
 
         .send-button:hover {
-            background: #0d8c6d;
+            background: #0d47a1;
         }
 
         .input-footer {
@@ -212,7 +222,7 @@
         }
 
         .preview-icon {
-            color: #10a37f;
+            color: #4285f4;
         }
 
         .preview-name {
@@ -242,7 +252,7 @@
         }
 
         .user-message {
-            background: #10a37f;
+            background: #4285f4;
             color: white;
             padding: 12px 16px;
             border-radius: 12px;
@@ -261,7 +271,6 @@
             word-wrap: break-word;
         }
         
-        /* تصميم مؤشر الكتابة */
         .typing-indicator {
             display: flex;
             align-items: center;
@@ -284,6 +293,31 @@
         @keyframes typing {
             0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
             40% { transform: scale(1); opacity: 1; }
+        }
+
+        .message-info {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 2px 6px;
+            font-size: 11px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: #e8f0fe;
+            color: #4285f4;
         }
 
         @media (max-width: 768px) {
@@ -310,8 +344,13 @@
 <body>
     <div class="chat-container">
         <div class="header">
-            <div class="logo">YN</div>
-            <h1>Youcef Niveau</h1>
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div>
+                <h1>Youcef Niveau</h1>
+                <div class="model-badge">Gemini 2.5 Flash</div>
+            </div>
         </div>
 
         <div class="welcome-section">
@@ -321,6 +360,7 @@
             <h1 class="welcome-title">مرحباً، أنا Youcef Niveau</h1>
             <p class="welcome-subtitle">
                 مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
+                <span style="color: #4285f4; font-weight: 600;">مزوّد بأحدث تقنية Google Gemini 2.5 Flash</span><br>
                 يمكنك إرفاق صورة للمسألة عبر زر (+)
             </p>
         </div>
@@ -347,7 +387,9 @@
                 </button>
             </div>
             <div class="input-footer">
-                Youcef Niveau قد يقدم معلومات غير صحيحة. يفضل مراجعة الإجابات.
+                <span style="color: #4285f4;">
+                    <i class="fas fa-bolt"></i> مدعوم بـ Gemini 2.5 Flash - 60 طلب مجاني/دقيقة
+                </span>
             </div>
         </div>
     </div>
@@ -356,9 +398,18 @@
         class YoucefNiveauChat {
             constructor() {
                 this.attachedFiles = [];
-                // *** التغيير الرئيسي: الاتصال بنقطة نهاية Vercel الآمنة ***
                 this.API_URL = '/api/chat'; 
                 this.initializeEventListeners();
+                this.setupWelcomeMessage();
+            }
+
+            setupWelcomeMessage() {
+                const welcomeSubtitle = document.querySelector('.welcome-subtitle');
+                welcomeSubtitle.innerHTML = `
+                    مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
+                    <span style="color: #4285f4; font-weight: 600;">مزوّد بأحدث تقنية Google Gemini 2.5 Flash</span><br>
+                    يمكنك إرفاق صورة للمسألة عبر زر (+)
+                `;
             }
 
             initializeEventListeners() {
@@ -377,6 +428,13 @@
 
                 textInput.addEventListener('input', this.autoResizeTextarea);
                 fileInput.addEventListener('change', (e) => this.handleFileUpload(e));
+
+                // إضافة زر النسخ لجميع الرسائل
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('copy-btn')) {
+                        this.copyMessage(e.target);
+                    }
+                });
             }
 
             autoResizeTextarea() {
@@ -389,7 +447,6 @@
                 if (!files.length) return;
 
                 for (let file of files) {
-                    // قبول الصور فقط لإرسالها كـ Base64 إلى نموذج DeepSeek Vision
                     if (file.type.startsWith('image/')) {
                         this.attachedFiles.push(file);
                         this.displayFilePreview(file);
@@ -412,13 +469,21 @@
                 previewItem.dataset.fileName = file.name;
                 previewItem.innerHTML = `
                     <i class="fas fa-image preview-icon"></i>
-                    <span class="preview-name">${file.name}</span>
+                    <span class="preview-name">${file.name} (${this.formatFileSize(file.size)})</span>
                     <button class="remove-btn" type="button" onclick="chat.removeFile('${file.name}')">
                         <i class="fas fa-times"></i>
                     </button>
                 `;
 
                 previewContainer.appendChild(previewItem);
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 ب';
+                const k = 1024;
+                const sizes = ['ب', 'ك.ب', 'م.ب', 'ج.ب'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
             }
 
             removeFile(fileName) {
@@ -463,6 +528,7 @@
                                 <span></span>
                                 <span></span>
                             </div>
+                            <span style="margin-right: 8px; font-size: 12px; color: #666;">Gemini 2.5 Flash يجيب...</span>
                         </div>
                     `;
                     chatMessages.appendChild(typingDiv);
@@ -494,6 +560,11 @@
                     content += `</div>`;
                 }
 
+                content += `<div class="message-info">
+                    <span>أنت</span>
+                    <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span>
+                </div>`;
+
                 messageDiv.innerHTML = content;
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -504,19 +575,52 @@
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'bot-message';
                 
-                // تحويل تنسيق Markdown إلى HTML
-                messageDiv.innerHTML = this.formatBotResponse(message);
+                const formattedMessage = this.formatBotResponse(message);
+                messageDiv.innerHTML = `
+                    <div style="margin-bottom: 8px;">${formattedMessage}</div>
+                    <div class="message-info">
+                        <span>Youcef Niveau (Gemini 2.5 Flash)</span>
+                        <div>
+                            <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span>
+                            <button class="copy-btn" title="نسخ الرسالة">
+                                <i class="far fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
                 
                 chatMessages.appendChild(messageDiv);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
             
             formatBotResponse(text) {
-                return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                           .replace(/\n/g, '<br>');
+                // تحويل تنسيق Markdown إلى HTML
+                return text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                    .replace(/`([^`]+)`/g, '<code>$1</code>')
+                    .replace(/\n/g, '<br>');
             }
 
-            // دالة لتحويل الملف إلى Base64
+            copyMessage(button) {
+                const messageDiv = button.closest('.bot-message');
+                const messageText = messageDiv.querySelector('div:first-child').innerText;
+                
+                navigator.clipboard.writeText(messageText).then(() => {
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    button.style.color = '#34a853';
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.style.color = '';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+            }
+
             fileToBase64(file) {
                 return new Promise((resolve, reject) => {
                     const reader = new FileReader();
@@ -525,12 +629,15 @@
                     reader.onerror = error => reject(error);
                 });
             }
-            
+
             async sendMessage() {
                 const textInput = document.getElementById('text-input');
                 const message = textInput.value.trim();
                 
-                if (!message && this.attachedFiles.length === 0) return;
+                if (!message && this.attachedFiles.length === 0) {
+                    alert('يرجى إدخال رسالة أو إرفاق صورة');
+                    return;
+                }
 
                 this.hideWelcomeSection();
                 const filesToSend = [...this.attachedFiles];
@@ -555,6 +662,13 @@
                     // 2. معالجة الصور المرفقة (Base64 Encoding)
                     for (const file of filesToSend) {
                         if (file.type.startsWith('image/')) {
+                            // تحقق من حجم الصورة (الحد الأقصى 20MB لـ Gemini)
+                            if (file.size > 20 * 1024 * 1024) {
+                                this.addBotMessage('⚠️ الصورة كبيرة جداً. الحد الأقصى لـ Gemini هو 20 ميجابايت. يرجى اختيار صورة أصغر.');
+                                this.hideTypingIndicator();
+                                return;
+                            }
+                            
                             const base64Data = await this.fileToBase64(file);
                             contents.push({
                                 type: "image_url",
@@ -563,30 +677,71 @@
                         }
                     }
                     
-                    // 3. إرسال الطلب إلى نقطة نهاية Vercel الآمنة (/api/chat)
+                    // 3. إرسال الطلب إلى نقطة نهاية Vercel الآمنة
                     const response = await fetch(this.API_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        // نرسل مصفوفة المحتوى فقط، ونقطة النهاية الآمنة ستضيف المفتاح
                         body: JSON.stringify({ contents: contents })
                     });
 
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));
-                        throw new Error(`خطأ في الوسيط (Proxy): ${response.status} - ${errorData.message || response.statusText}`);
+                        let errorMessage = '❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.**';
+                        
+                        if (response.status === 500 && errorData.message?.includes('GEMINI_API_KEY')) {
+                            errorMessage = `
+                                ❌ **خطأ في الإعداد**
+                                <br><br>
+                                Gemini API Key غير مضاف إلى Vercel.
+                                <br><br>
+                                <strong>خطوات الحل:</strong>
+                                <br>
+                                1. احصل على مفتاح مجاني من: <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                                <br>
+                                2. في Vercel Dashboard، أضف متغير بيئة:
+                                <br>
+                                <code>Name: GEMINI_API_KEY</code>
+                                <br>
+                                <code>Value: مفتاح_الـAPI_الخاص_بك</code>
+                                <br>
+                                3. أعد نشر المشروع
+                            `;
+                        } else if (response.status === 429) {
+                            errorMessage = `
+                                ⚠️ **تم تجاوز الحد المجاني**
+                                <br><br>
+                                Gemini API المجاني يسمح بـ 60 طلب/دقيقة فقط.
+                                <br>
+                                يرجى الانتظار دقيقة قبل المحاولة مرة أخرى.
+                            `;
+                        } else if (response.status === 404) {
+                            errorMessage = `
+                                ❌ **نموذج غير متوفر**
+                                <br><br>
+                                Gemini 2.5 Flash غير متاح حالياً.
+                                <br>
+                                الرجاء تغيير السطر في chat.js إلى:
+                                <br>
+                                <code>gemini-1.5-flash</code>
+                            `;
+                        } else if (errorData.message) {
+                            errorMessage = `❌ **${errorData.message}**`;
+                        }
+                        
+                        throw new Error(errorMessage);
                     }
 
                     const data = await response.json();
-                    const botResponse = data.response; // الاستجابة من نقطة النهاية الآمنة
+                    const botResponse = data.response;
 
                     this.hideTypingIndicator();
                     this.addBotMessage(botResponse);
 
                 } catch (error) {
                     this.hideTypingIndicator();
-                    this.addBotMessage('❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.** يرجى التأكد من أن مفتاح API صحيح في متغيرات البيئة على Vercel.');
+                    this.addBotMessage(error.message || '❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.**');
                     console.error('API Error:', error);
                 }
             }
@@ -595,6 +750,16 @@
         let chat;
         document.addEventListener('DOMContentLoaded', () => {
             chat = new YoucefNiveauChat();
+            
+            // تحسين تجربة المستخدم عند التحميل
+            document.getElementById('text-input').focus();
+        });
+
+        // إضافة زر Enter لتحسين UX
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                document.getElementById('send-button').click();
+            }
         });
     </script>
 </body>
