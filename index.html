@@ -6,7 +6,7 @@
     <title>Youcef Niveau - المساعد الذكي</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
-        /* CSS الخاص بك بالكامل */
+        /* CSS الخاص بك بالكامل - مع تعديلات بسيطة */
         * {
             margin: 0;
             padding: 0;
@@ -48,7 +48,7 @@
         .logo {
             width: 40px;
             height: 40px;
-            background: linear-gradient(135deg, #4285f4 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #10a37f 0%, #0d8c6d 100%);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -64,14 +64,34 @@
             font-weight: 600;
         }
 
-        .model-badge {
-            background: linear-gradient(135deg, #34a853 0%, #0d8c6d 100%);
-            color: white;
-            padding: 4px 12px;
+        .model-selector {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e5e5;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .model-btn {
+            padding: 8px 16px;
+            border: 2px solid #e5e5e5;
+            background: white;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .model-btn.active {
+            background: #10a37f;
+            color: white;
+            border-color: #10a37f;
+        }
+
+        .model-btn:hover:not(.active) {
+            background: #f0f0f0;
         }
 
         .welcome-section {
@@ -87,7 +107,7 @@
         .welcome-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #4285f4 0%, #0d47a1 100%);
+            background: linear-gradient(135deg, #10a37f 0%, #0d8c6d 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -140,9 +160,9 @@
         }
 
         .attachment-btn:hover {
-            background: #4285f4;
+            background: #10a37f;
             color: white;
-            border-color: #4285f4;
+            border-color: #10a37f;
         }
 
         .input-wrapper {
@@ -166,7 +186,7 @@
         }
 
         .text-input:focus {
-            border-color: #4285f4;
+            border-color: #10a37f;
         }
 
         .send-button {
@@ -174,7 +194,7 @@
             right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            background: #4285f4;
+            background: #10a37f;
             color: white;
             border: none;
             width: 40px;
@@ -188,7 +208,7 @@
         }
 
         .send-button:hover {
-            background: #0d47a1;
+            background: #0d8c6d;
         }
 
         .input-footer {
@@ -222,7 +242,7 @@
         }
 
         .preview-icon {
-            color: #4285f4;
+            color: #10a37f;
         }
 
         .preview-name {
@@ -252,7 +272,7 @@
         }
 
         .user-message {
-            background: #4285f4;
+            background: #10a37f;
             color: white;
             padding: 12px 16px;
             border-radius: 12px;
@@ -317,7 +337,16 @@
 
         .copy-btn:hover {
             background: #e8f0fe;
-            color: #4285f4;
+            color: #10a37f;
+        }
+
+        .current-model {
+            font-size: 11px;
+            background: #10a37f;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 5px;
         }
 
         @media (max-width: 768px) {
@@ -338,6 +367,15 @@
             .bot-message {
                 max-width: 90%;
             }
+            
+            .model-selector {
+                padding: 8px;
+            }
+            
+            .model-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -349,7 +387,16 @@
             </div>
             <div>
                 <h1>Youcef Niveau</h1>
-                </div>
+            </div>
+        </div>
+
+        <div class="model-selector">
+            <button class="model-btn active" data-model="deepseek-chat">
+                <i class="fas fa-comments"></i> DeepSeek Chat
+            </button>
+            <button class="model-btn" data-model="deepseek-reasoner">
+                <i class="fas fa-brain"></i> DeepSeek Reasoner
+            </button>
         </div>
 
         <div class="welcome-section">
@@ -359,7 +406,7 @@
             <h1 class="welcome-title">مرحباً، أنا Youcef Niveau</h1>
             <p class="welcome-subtitle">
                 مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
-                <span style="color: #4285f4; font-weight: 600;">مدعوم بأحدث تقنيات الذكاء الاصطناعي</span><br>
+                <span style="color: #10a37f; font-weight: 600;">مدعوم بـ DeepSeek الذكاء الاصطناعي</span><br>
                 يمكنك إرفاق صورة للمسألة عبر زر (+)
             </p>
         </div>
@@ -386,8 +433,8 @@
                 </button>
             </div>
             <div class="input-footer">
-                <span style="color: #4285f4;">
-                    <i class="fas fa-bolt"></i> Youcef Niveau جاهز للمساعدة الآن
+                <span style="color: #10a37f;">
+                    <i class="fas fa-bolt"></i> مدعوم بـ DeepSeek API - مجاني بالكامل
                 </span>
             </div>
         </div>
@@ -397,19 +444,44 @@
         class YoucefNiveauChat {
             constructor() {
                 this.attachedFiles = [];
-                this.API_URL = '/api/chat'; 
+                this.API_URL = '/api/chat';
+                this.currentModel = 'deepseek-chat'; // النموذج الافتراضي
                 this.initializeEventListeners();
                 this.setupWelcomeMessage();
+                this.setupModelSelector();
             }
 
             setupWelcomeMessage() {
                 const welcomeSubtitle = document.querySelector('.welcome-subtitle');
-                // تم تعديل هذا النص لإزالة الإشارة إلى Gemini
                 welcomeSubtitle.innerHTML = `
                     مساعدك الذكي في حل المسائل الرياضية والعلوم<br>
-                    <span style="color: #4285f4; font-weight: 600;">مدعوم بأحدث تقنيات الذكاء الاصطناعي</span><br>
+                    <span style="color: #10a37f; font-weight: 600;">مدعوم بـ DeepSeek الذكاء الاصطناعي</span><br>
                     يمكنك إرفاق صورة للمسألة عبر زر (+)
                 `;
+            }
+
+            setupModelSelector() {
+                const modelButtons = document.querySelectorAll('.model-btn');
+                modelButtons.forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        // إزالة النشاط من جميع الأزرار
+                        modelButtons.forEach(btn => btn.classList.remove('active'));
+                        // إضافة النشاط للزر المحدد
+                        e.target.classList.add('active');
+                        // تحديث النموذج الحالي
+                        this.currentModel = e.target.dataset.model;
+                        this.updateInputFooter();
+                    });
+                });
+            }
+
+            updateInputFooter() {
+                const footer = document.querySelector('.input-footer span');
+                const modelNames = {
+                    'deepseek-chat': 'DeepSeek Chat',
+                    'deepseek-reasoner': 'DeepSeek Reasoner'
+                };
+                footer.innerHTML = `<i class="fas fa-bolt"></i> ${modelNames[this.currentModel]} - جاهز للمساعدة`;
             }
 
             initializeEventListeners() {
@@ -509,6 +581,7 @@
                     if (!chatMessages) {
                         chatMessages = document.createElement('div');
                         chatMessages.className = 'chat-messages';
+                        const modelSelector = document.querySelector('.model-selector');
                         document.querySelector('.chat-container').insertBefore(chatMessages, document.querySelector('.input-container'));
                     }
                 }
@@ -521,7 +594,10 @@
                     typingDiv = document.createElement('div');
                     typingDiv.className = 'bot-message';
                     typingDiv.id = 'typing-indicator';
-                    // تم تعديل هذا النص لإزالة الإشارة إلى Gemini
+                    const modelNames = {
+                        'deepseek-chat': 'DeepSeek Chat',
+                        'deepseek-reasoner': 'DeepSeek Reasoner'
+                    };
                     typingDiv.innerHTML = `
                         <div class="typing-indicator">
                             <div class="typing-dots">
@@ -529,7 +605,7 @@
                                 <span></span>
                                 <span></span>
                             </div>
-                            <span style="margin-right: 8px; font-size: 12px; color: #666;">Youcef Niveau يجيب...</span>
+                            <span style="margin-right: 8px; font-size: 12px; color: #666;">${modelNames[this.currentModel]} يجيب...</span>
                         </div>
                     `;
                     chatMessages.appendChild(typingDiv);
@@ -577,10 +653,15 @@
                 messageDiv.className = 'bot-message';
                 
                 const formattedMessage = this.formatBotResponse(message);
+                const modelNames = {
+                    'deepseek-chat': 'DeepSeek Chat',
+                    'deepseek-reasoner': 'DeepSeek Reasoner'
+                };
                 messageDiv.innerHTML = `
                     <div style="margin-bottom: 8px;">${formattedMessage}</div>
                     <div class="message-info">
-                        <span>Youcef Niveau</span> <div>
+                        <span>Youcef Niveau <span class="current-model">${modelNames[this.currentModel]}</span></span>
+                        <div>
                             <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span>
                             <button class="copy-btn" title="نسخ الرسالة">
                                 <i class="far fa-copy"></i>
@@ -653,57 +734,92 @@
                 this.showTypingIndicator();
 
                 try {
-                    // 1. تحضير محتوى الرسالة (Content Payload)
-                    const contents = [];
+                    // بناء الرسالة لتنسيق DeepSeek
+                    const messages = [];
+                    
+                    // إضافة رسالة النظام
+                    messages.push({
+                        role: "system",
+                        content: `أنت مساعد ذكي اسمك "Youcef Niveau".
+مهمتك الأساسية هي مساعدة الطلاب في حل المسائل الرياضية والعلمية.
+
+**تعليمات الهوية:**
+* عندما يسألك المستخدم "من أنت؟"، أجب: أنا youcef Niveau، مساعدك الذكي. أنا هنا لكي أجعلك ترتقي، مدرب ومطور من طرف youcef Djeghbala.
+* عندما يسألك عن من دربك أو من صنعك، أجب: تم تدريبي بواسطة youcef Djeghbala.
+* عندما يسألك عن "كيف صنعت؟" أو عن أسرار عملك أو برمجتك، أجب: إن يوسف يمنعنا من إفشاء سره.
+* **مهم جداً:** لا تذكر "DeepSeek" أو "نماذج لغوية كبيرة" في أي سياق يتعلق بالهوية.
+
+**تعليمات الرد:**
+1. استخدم اللغة العربية الفصحى في ردودك
+2. قدم شرحاً مفصلاً للخطوات في الحلول
+3. إذا أرفق المستخدم صورة، قم بتحليلها وحل المسألة
+4. كن صبوراً ومفصلاً في الشرح`
+                    });
+
+                    // إضافة رسالة المستخدم
+                    let userContent = [];
+                    
                     if (message) {
-                        contents.push({ type: "text", text: message });
+                        userContent.push({
+                            type: "text",
+                            text: message
+                        });
                     }
 
-                    // 2. معالجة الصور المرفقة (Base64 Encoding)
+                    // إضافة الصور المرفقة
                     for (const file of filesToSend) {
                         if (file.type.startsWith('image/')) {
-                            // تحقق من حجم الصورة (الحد الأقصى 20MB لـ Gemini)
-                            if (file.size > 20 * 1024 * 1024) {
-                                this.addBotMessage('⚠️ الصورة كبيرة جداً. الحد الأقصى المسموح به هو 20 ميجابايت. يرجى اختيار صورة أصغر.');
+                            // تحقق من حجم الصورة (الحد الأقصى لـ DeepSeek 5MB)
+                            if (file.size > 5 * 1024 * 1024) {
+                                this.addBotMessage('⚠️ الصورة كبيرة جداً. الحد الأقصى المسموح به هو 5 ميجابايت. يرجى اختيار صورة أصغر.');
                                 this.hideTypingIndicator();
                                 return;
                             }
                             
                             const base64Data = await this.fileToBase64(file);
-                            contents.push({
+                            userContent.push({
                                 type: "image_url",
                                 image_url: { url: base64Data }
                             });
                         }
                     }
-                    
-                    // 3. إرسال الطلب إلى نقطة نهاية Vercel الآمنة
+
+                    messages.push({
+                        role: "user",
+                        content: userContent
+                    });
+
+                    // إرسال الطلب إلى DeepSeek API
                     const response = await fetch(this.API_URL, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ contents: contents })
+                        body: JSON.stringify({ 
+                            messages: messages,
+                            model: this.currentModel,
+                            max_tokens: 4096,
+                            temperature: 0.7
+                        })
                     });
 
                     if (!response.ok) {
                         const errorData = await response.json().catch(() => ({}));
                         let errorMessage = '❌ **عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.**';
                         
-                        // تم تعديل رسائل الخطأ لإزالة الإشارة إلى Gemini
-                        if (response.status === 500 && errorData.message?.includes('GEMINI_API_KEY')) {
+                        if (response.status === 401) {
                             errorMessage = `
-                                ❌ **خطأ في الإعداد**
+                                ❌ **خطأ في المفتاح السري**
                                 <br><br>
-                                المفتاح السري (API Key) غير مضاف إلى Vercel.
+                                مفتاح DeepSeek API غير صالح أو مفقود.
                                 <br><br>
                                 <strong>خطوات الحل:</strong>
                                 <br>
-                                1. احصل على مفتاح مجاني.
+                                1. احصل على مفتاح مجاني من: <a href="https://platform.deepseek.com" target="_blank">DeepSeek Platform</a>
                                 <br>
                                 2. في Vercel Dashboard، أضف متغير بيئة:
                                 <br>
-                                <code>Name: GEMINI_API_KEY</code>
+                                <code>Name: DEEPSEEK_API_KEY</code>
                                 <br>
                                 <code>Value: مفتاح_الـAPI_الخاص_بك</code>
                                 <br>
@@ -713,17 +829,7 @@
                             errorMessage = `
                                 ⚠️ **تم تجاوز الحد المسموح به**
                                 <br><br>
-                                الخدمة تسمح بـ 60 طلب/دقيقة فقط.
-                                <br>
-                                يرجى الانتظار دقيقة قبل المحاولة مرة أخرى.
-                            `;
-                        } else if (response.status === 404) {
-                            errorMessage = `
-                                ❌ **نموذج غير متوفر**
-                                <br><br>
-                                النموذج الذكي غير متاح حالياً.
-                                <br>
-                                الرجاء التأكد من إعدادات chat.js
+                                يرجى الانتظار قليلاً قبل المحاولة مرة أخرى.
                             `;
                         } else if (errorData.message) {
                             errorMessage = `❌ **${errorData.message}**`;
