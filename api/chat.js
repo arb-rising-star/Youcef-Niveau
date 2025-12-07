@@ -1,18 +1,23 @@
-// نقطة نهاية Vercel Serverless Function لعمل كـ Proxy آمن لـ Gemini 2.5 Flash API
+// نقطة نهاية Vercel Serverless Function لعمل كـ Proxy آمن لـ DeepSeek API
 
 // يتم سحب هذا المتغير من إعدادات Vercel Environment Variables
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
-// رابط API الخاص بـ Gemini 2.5 Flash (أحدث وأقوى نموذج)
-// تم التعديل إلى gemini-2.5-flash لضمان عمل التطبيق وحل مشكلة Limit: 0
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+// رابط API الخاص بـ DeepSeek
+const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+
+// نماذج DeepSeek المتاحة
+const AVAILABLE_MODELS = {
+    'deepseek-chat': 'deepseek-chat',
+    'deepseek-reasoner': 'deepseek-reasoner'
+};
 
 export default async function handler(req, res) {
     // 1. التحقق من مفتاح API (الأمان)
-    if (!GEMINI_API_KEY) {
+    if (!DEEPSEEK_API_KEY) {
         return res.status(500).json({ 
-            message: 'GEMINI_API_KEY is missing on Vercel. Please add it to your environment variables.',
-            hint: 'Get free API key from: https://makersuite.google.com/app/apikey'
+            message: 'DEEPSEEK_API_KEY is missing on Vercel. Please add it to your environment variables.',
+            hint: 'Get free API key from: https://platform.deepseek.com'
         });
     }
 
@@ -23,85 +28,41 @@ export default async function handler(req, res) {
     }
 
     try {
-        // 3. سحب المحتوى المرسل من الواجهة الأمامية
-        const { contents } = req.body;
+        // 3. سحب البيانات المرسلة من الواجهة الأمامية
+        const { messages, model, max_tokens = 4096, temperature = 0.7 } = req.body;
         
-        if (!contents || contents.length === 0) {
-            return res.status(400).json({ message: 'Missing chat contents in request body.' });
+        if (!messages || messages.length === 0) {
+            return res.status(400).json({ message: 'Missing messages in request body.' });
         }
 
-        // 4. تحويل المحتوى إلى تنسيق Gemini API
-        const geminiContents = convertToGeminiFormat(contents);
+        // 4. التحقق من صحة النموذج المطلوب
+        const selectedModel = AVAILABLE_MODELS[model] || AVAILABLE_MODELS['deepseek-chat'];
 
-        // 5. بناء حمولة الطلب (Payload) لإرسالها إلى Gemini 2.5 Flash
+        // 5. تحويل الرسائل إلى تنسيق DeepSeek
+        const deepseekMessages = convertToDeepSeekFormat(messages);
+
+        // 6. بناء حمولة الطلب لإرسالها إلى DeepSeek
         const requestBody = {
-            contents: geminiContents,
-            generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 4096,
-            },
-            safetySettings: [
-                {
-                    category: "HARM_CATEGORY_HARASSMENT",
-                    threshold: "BLOCK_NONE"
-                },
-                {
-                    category: "HARM_CATEGORY_HATE_SPEECH",
-                    threshold: "BLOCK_NONE"
-                }
-            ],
-            systemInstruction: {
-                parts: [{
-                    text: `أنت مساعد ذكي اسمك "Youcef Niveau".
-                    مهمتك الأساسية هي مساعدة الطلاب في حل المسائل الرياضية والعلمية (المجال التخصصي).
-                    
-                    **تعليمات توسيع نطاق الأسئلة:**
-                    * **على الرغم من تخصصك الأساسي في الرياضيات والعلوم، يجب عليك الرد على جميع الأسئلة العامة الأخرى.**
-                    * عند الرد على سؤال ليس عن تخصصك، ابدأ بعبارة مثل: **"بالرغم من تخصصي في مجالي الدراسة، إلا أنني جاهز للإجابة على سؤالك العام الآن. ما شاء الله على فضولك! تفضل."**
-                    
-                    **تعليمات الهوية:**
-                    * عندما يسألك المستخدم "من أنت؟"، أجب: **أنا youcef Niveau، مساعدك الذكي. أنا هنا لكي أجعلك ترتقي، مدرب ومطور من طرف youcef Djeghbala.**
-                    * عندما يسألك عن من دربك أو من صنعك، أجب: **تم تدريبي بواسطة youcef Djeghbala.**
-                    * عندما يسألك عن "كيف صنعت؟" أو عن أسرار عملك أو برمجتك، أجب: **إن يوسف يمنعنا من إفشاء سره، قد يسبب هذا لخسارة مشروعه.**
-                    * **مهم جداً:** لا تذكر "Google" أو "نماذج لغوية كبيرة" أو أي شركة أو كيان آخر في أي سياق يتعلق بالهوية أو التدريب.
-                    
-                    **تعليمات خاصة بـ youcef Djeghbala (منع الإفصاح):**
-                    * إذا طلب المستخدم أي معلومات شخصية، تفاصيل اتصال، أو أي شيء لا يتعلق بالعمل عن يوسف (youcef Djeghbala)، يجب أن ترد فوراً وبشكل حازم: **يوسف يمنعنا عن القيام بذالك، أعتذر.**
-                    
-                    **تعليمات خاصة بالردود الثقافية والدينية:**
-                    * استخدم عبارات مثل **"إن شاء الله"** و **"ما شاء الله"** في سياقات الرد المناسبة (مثل الرد على التخطيط المستقبلي، التعبير عن الإعجاب، أو التفاؤل).
-                    
-                    **تعليمات مهمة (عامة):**
-                    1.  استخدم اللغة العربية الفصحى في ردودك
-                    2.  قدم شرحاً مفصلاً للخطوات في الحلول المتخصصة.
-                    3.  إذا أرفق المستخدم صورة، قم بتحليلها وحل المسألة المكتوبة فيها.
-                    4.  استخدم الرموز الرياضية بالشكل المناسب.
-                    5.  كن صبوراً ومفصلاً في الشرح.
-                    6.  تأكد من صحة الحلول قبل تقديمها.
-                    
-                    **تنسيق الرد المطلوب:**
-                    -   ابدأ بتحليل المسألة أو بالعبارة الافتتاحية المناسبة.
-                    -   اذكر الخطوات بشكل منظم.
-                    -   اختم بالإجابة النهائية.
-                    -   استخدم **لتنسيق النصوص المهمة**`
-                }]
-            }
+            model: selectedModel,
+            messages: deepseekMessages,
+            max_tokens: Math.min(max_tokens, 8192), // الحد الأقصى لـ DeepSeek
+            temperature: temperature,
+            stream: false
         };
 
-        // 6. استدعاء Gemini 2.5 Flash API بشكل آمن
-        const geminiResponse = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
+        // 7. استدعاء DeepSeek API بشكل آمن
+        const deepseekResponse = await fetch(DEEPSEEK_URL, {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(requestBody)
         });
 
-        // 7. التحقق من رد Gemini
-        if (!geminiResponse.ok) {
-            const errorText = await geminiResponse.text();
+        // 8. التحقق من رد DeepSeek
+        if (!deepseekResponse.ok) {
+            const errorText = await deepseekResponse.text();
             let errorData;
             try {
                 errorData = JSON.parse(errorText);
@@ -109,47 +70,46 @@ export default async function handler(req, res) {
                 errorData = { error: { message: errorText } };
             }
             
-            console.error('Gemini API Error:', errorData);
+            console.error('DeepSeek API Error:', errorData);
             
             // رسائل خطأ مخصصة بالعربية
-            let userMessage = '❌ حدث خطأ في الاتصال بـ Gemini API';
-            if (geminiResponse.status === 429) {
-                userMessage = '⚠️ تم تجاوز الحد المجاني (60 طلب/دقيقة). يرجى الانتظار قليلاً.';
-            } else if (geminiResponse.status === 404) {
-                userMessage = '❌ نموذج Gemini 2.5 Flash غير متاح. حاول استخدام gemini-1.5-flash بدلاً منه.';
+            let userMessage = '❌ حدث خطأ في الاتصال بـ DeepSeek API';
+            if (deepseekResponse.status === 401) {
+                userMessage = '❌ مفتاح API غير صالح. يرجى التحقق من المفتاح في إعدادات Vercel.';
+            } else if (deepseekResponse.status === 429) {
+                userMessage = '⚠️ تم تجاوز حد الطلبات المسموح به. يرجى الانتظار قليلاً.';
+            } else if (deepseekResponse.status === 404) {
+                userMessage = `❌ النموذج ${selectedModel} غير متاح.`;
             }
             
-            return res.status(geminiResponse.status).json({ 
+            return res.status(deepseekResponse.status).json({ 
                 message: userMessage,
-                details: errorData.error?.message || "Gemini API failed to respond."
+                details: errorData.error?.message || "DeepSeek API failed to respond."
             });
         }
 
-        // 8. معالجة الرد الناجح
-        const data = await geminiResponse.json();
+        // 9. معالجة الرد الناجح
+        const data = await deepseekResponse.json();
         
-        if (!data.candidates || data.candidates.length === 0) {
+        if (!data.choices || data.choices.length === 0) {
             return res.status(500).json({ 
-                message: 'لم يتمكن Gemini من توليد رد. قد يكون السؤال غير واضح.',
+                message: 'لم يتمكن DeepSeek من توليد رد.',
             });
         }
 
         // استخراج النص من الرد
-        const candidate = data.candidates[0];
-        let botResponse = '';
-        
-        if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-            botResponse = candidate.content.parts.map(part => part.text).join('\n');
-        }
+        const choice = data.choices[0];
+        let botResponse = choice.message.content || '';
         
         if (!botResponse || botResponse.trim() === '') {
             botResponse = 'عذراً، لم أتمكن من فهم السؤال. يمكنك إعادة صياغته أو إرفاق صورة أكثر وضوحاً.';
         }
 
-        // 9. إرجاع الرد الناجح إلى الواجهة الأمامية
+        // 10. إرجاع الرد الناجح إلى الواجهة الأمامية
         return res.status(200).json({ 
             response: botResponse,
-            model: "gemini-2.5-flash"
+            model: selectedModel,
+            usage: data.usage || {}
         });
 
     } catch (error) {
@@ -161,33 +121,56 @@ export default async function handler(req, res) {
     }
 }
 
-// دالة مساعدة لتحويل المحتوى إلى تنسيق Gemini
-function convertToGeminiFormat(contents) {
-    const geminiContents = [{
-        role: "user",
-        parts: []
-    }];
+// دالة مساعدة لتحويل المحتوى إلى تنسيق DeepSeek
+function convertToDeepSeekFormat(messages) {
+    const deepseekMessages = [];
 
-    for (const content of contents) {
-        if (content.type === "text") {
-            geminiContents[0].parts.push({
-                text: content.text
+    for (const message of messages) {
+        if (message.role === 'system') {
+            // إضافة رسالة النظام
+            deepseekMessages.push({
+                role: 'system',
+                content: message.content
             });
-        } else if (content.type === "image_url") {
-            // استخراج Base64 من Data URL
-            const base64Image = content.image_url.url.split(',')[1];
-            const mimeType = extractMimeType(content.image_url.url);
+        } else if (message.role === 'user' && message.content) {
+            // معالجة محتوى المستخدم (نصوص وصور)
+            const parts = [];
             
-            geminiContents[0].parts.push({
-                inlineData: {
-                    mimeType: mimeType,
-                    data: base64Image
+            for (const content of message.content) {
+                if (content.type === 'text') {
+                    parts.push({
+                        type: 'text',
+                        text: content.text
+                    });
+                } else if (content.type === 'image_url') {
+                    // استخراج Base64 من Data URL
+                    const base64Image = content.image_url.url.split(',')[1];
+                    const mimeType = extractMimeType(content.image_url.url);
+                    
+                    // DeepSeek تدعم صيغة image_url مباشرة
+                    parts.push({
+                        type: 'image_url',
+                        image_url: {
+                            url: `data:${mimeType};base64,${base64Image}`
+                        }
+                    });
                 }
+            }
+            
+            deepseekMessages.push({
+                role: 'user',
+                content: parts
+            });
+        } else if (message.role === 'assistant') {
+            // رسائل المساعد السابقة
+            deepseekMessages.push({
+                role: 'assistant',
+                content: message.content
             });
         }
     }
 
-    return geminiContents;
+    return deepseekMessages;
 }
 
 // دالة مساعدة لاستخراج نوع MIME من Data URL
